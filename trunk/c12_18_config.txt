@@ -1,0 +1,82 @@
+# c12_18_config.txt - example configuration file
+# 
+# Copyright (c) 2011, InGuardians, Inc. <consulting@inguardians.com>
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Point Of Contact:    Don C. Weber <don@inguardians.com>
+
+[C1218Optical]
+
+# Debug
+debug=1
+
+# Some optical probes require asserting RTS to invert the signal
+invert=1
+
+# Output file - will be split on file extention to add unique date and time for log file
+outfile=c1218_optical_results.txt
+
+# Default user number
+user_num=2
+
+# Default user string can be provided in raw bytes, which may be necessary
+user_str=30313233343536373839404142434445
+
+# Default passwd to use for meter communications
+passwd=aabbccddeeff0011223320202020202020202020
+
+# Password file for brute forcing logon
+passwd_file=meter_passwd.txt
+
+# Serial Communication Port
+comm_port=/dev/ttyUSB0
+
+# Serial Port Baud Rate
+comm_baud=9600
+
+# Perform Negotiation
+nego_on=1
+
+# Logging Directory
+log_dir=logs
+
+[C1218Hardware]
+
+# Debug
+debug=1
+
+# Output file
+#outfile=c1218_optical_results.txt
+
+# Default user number
+user_num=2
+
+# Default user string can be provided in raw bytes, which may be necessary
+user_str=30313233343536373839404142434445
+
+# Default passwd to use for meter communications
+passwd=aabbccddeeff0011223320202020202020202020
+
+# Password file for brute forcing logon
+passwd_file=meter_passwd.txt
+
+# Serial Communication Port
+comm_port=/dev/ttyUSB0
+
+# Serial Port Baud Rate
+comm_baud=9600
+
+# Perform Negotiation
+nego_on=1

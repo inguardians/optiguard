@@ -1,0 +1,226 @@
+OptiGuard is an assessment framework to test Smart Meter hardware and 
+optical port implementation and security. 
+
+Copyright (c) 2011, InGuardians, Inc. <consulting@inguardians.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+------------------
+REQUIREMENTS
+------------------
+OptiGuard is currently developed on Linux-based systems but has been 
+tested and works on Windows-based systems.  
+
+OptiGuard should run on most version of Python. However, version 2.7
+is most optimal. Users using Python 2.6 may have to install extra
+modules such as ConfigParser. Python 3+ is not supported.
+
+OptiGuard requires the following Python modules:
+
+pySerial - http://pyserial.sourceforge.net/
+	A serial communications library for Python
+
+crcmod   - http://sourceforge.net/projects/crcmod/
+	Module for Cyclic Redundancy Code (CRC) generation and validation
+
+bitarray - http://pypi.python.org/pypi/bitarray
+	Efficient bit array handling in Python
+
+Module Installation (know your Python version):
+pySerial can be installed on Ubuntu using apt-get:
+    sudo apt-get install python-serial
+    Fedora: sudo yum install python-serial
+    Window binary: http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyserial
+
+bitarray can be installed on Fedora using yum:
+    sudo apt-get install python-bitarray
+    sudo yum install python-bitarray
+    Windows binary: http://www.lfd.uci.edu/~gohlke/pythonlibs/#bitarray
+
+crcmod can installed by downloading the modules from the following URL and running:
+    http://pypi.python.org/pypi/crcmod/1.7#downloads
+    Linux Install: sudo python setup.py install
+    Windows Install: run the MSI installer
+
+------------------
+STANDARD DOCUMENTS
+------------------
+Understanding the ANSI C12 documentation is critical to understanding the implementation 
+and utilitization of OptiGuard.  This documentation can be located at the following locations.
+
+ANSI C12.18 - http://www.nema.org/stds/complimentary-docs/upload/ANSI-C12-18.pdf
+ANSI C12.19 - http://www.nema.org/stds/complimentary-docs/upload/ANSI-C1219-2008_contents%20and%20scope.pdf
+ANSI C12.21 - http://www.nema.org/stds/complimentary-docs/upload/ANSI-C12.21-2006.pdf
+ANSI C12.22 - http://www.nema.org/stds/complimentary-docs/upload/ANSI-C1222-2008%20Contents%20&%20Scope.pdf
+
+------------------
+INSTALLATION
+------------------
+There are currently no specific installation requirements.
+
+------------------
+DIRECTORIES
+------------------
+
+The directory structure for the OptiGuard code is described as follows:
+
+branches  - additional versions of OptiGuard
+    optic - version ready for ShmooCon Talk, and what is provided in trunk
+    retina - an update of optic to address TODO and FIXME issues in optic
+    fovea - current stable version, an update of serial, MS Window, and removed SULLEY functionality
+doc       - usage documentation
+trunk     - C12.18 serial, packet, and client scripts
+tools     - Individual tools 
+
+------------------
+REQUIRED HARDWARE
+------------------
+The following are merely examples for interacting with ANSI Type-2 Optical Ports.
+These examples vary by price although the functionality should generally be the same.
+OptiGuard interacts with USB-type probes
+
+OptoCord USB Optical Probe - http://www.probe-tec.com/catalog.htm#OptoCord
+ANSI Type-2 Opto-Coupler   - http://www.solarshare.net/HT/OC/oc.htm
+Model A9U ANSI Type 2 Optical Probe - http://www.abacuselectrics.com/ansi.htm
+Intelliprobe iP500-330     - http://intelliprobe.net/productDetails.php?product=36
+
+Additional hardware requirements include tools to physically interact with hardware
+components.  Dumping memory components will require some type of flash utility that
+is compatible with the meter's memory components.  One example is:
+
+Total Phase Aardvark I2C/SPI Host Adapter - http://www.totalphase.com/products/aardvark_i2cspi/
+Total Phase Flash Center Software - http://www.totalphase.com/support/product/aardvark_i2cspi/
+
+A logic analyzer will be required to monitor C12.18 hardware communications.
+The following logic analyzer was used during the development of this tool.
+
+Saleae Logic - http://www.saleae.com/home/
+
+------------------
+SMART SOFTWARE FILES
+------------------
+
+c12_18_serial.py         - Serial class for serial communications
+c12_18_packet.py         - C12.18 packet class for building C12.18 packets
+c12_18_hw_client.py      - Client for reading and writing to C12.19 Standard and Manufacturer
+                           tables and running Standard and Manufacturer procedures via hardware.
+                           This client only sends and does not (currently) receive. Responses
+                           must be read using a Logical Analyzer. The following is the usage 
+                           statement for this client.
+                           
+        Usage: c12_18_hw_client.py [-h] [-D] [-P <num>] [-f <file>] [-no] -a <action> [-t <num>] [-d <num>] [-p <num>] [-s <data>] [-lp <comma separated list>]
+           -h: print help
+           -D: turn on debugging statements
+           -P <num>: Start pause seconds
+           -a <action>: Perform specific action:
+               test_login
+               read_table: requires -t and table number or defaults to 0
+               read_decade: requires -d and decade number or defaults to 0
+               run_proc: requires -p and procedure number or defaults to 0
+           -f <file>: select configuration file
+           -t <num>: table number
+           -d <num>: decade number
+           -p <num>: procedure number
+           -s <data>: data for sending
+           -lp <data>: comma separated list of procedure numbers
+           -no: turn off negotiation attempts
+        
+        NOTE: This tool is fire and forget.  You will need to monitor the hardware lines
+              with a logic analyzer to determine success and failure or to read data.
+
+c12_18_optical_client.py - Client for reading and writing to C12.19 Standard and Manufacturer
+                           tables and running Standard and Manufacturer procedures via the
+                           ANSI Type-2 Optical Port. This client sends and receives data. Where
+                           appropriate it parses the results. The following are the menu options
+                           for interacting with this client.
+
+        ##########################################
+        ## 0) Quit
+        ## 1) Test Negotiation Sequence
+        ## 2) Test Logon
+        ## 3) Parse Configuration Table
+        ## 4) Parse General Manufacturer Identification Table
+        ## 5) Read Table
+        ## 6) Read Multiple Tables
+        ## 7) Read Decade
+        ## 8) Run Procedure
+        ## 9) Run Multiple Procedures
+        ## 10) Run Multiple Procedures without login
+        ## 11) Write Table
+        ## 12) Brute Force Logon
+        ## 13) Alternate Brute Force Logon (Read Table Verification)
+        ## 14) Fuzz Security code
+        ## 15) Alternate Fuzz Security code
+        ## 16) Walk User IDs
+        ## 17) Read Single Table walking User IDs
+        ## 18) Read Multiple Table walking User IDs
+        ## 19) Write Table 13 Demand Control Table. Table write Proof of Concept only. 
+        ## 20) Run Procedure 21 Direct Load Control and set 0 percent load
+        ## 21) Run Procedure 21 Direct Load Control and set 100 percent load
+        ## 22) Toggle Debug
+        ## 23) Terminate Session
+        ##########################################
+
+c12_18_table00_parser.py - tool to parse the C12.19 Table 00 Configuration Table. Provides
+                           information about the Standard and Manufacture tables and 
+                           procedures. Can be run stand alone or used by clients.
+
+c12_18_extract_keys.py   - tool to extract C12.18 Security Codes from binary data files.
+                           This tool will print 4 to 20 byte security codes from the file.
+                           Security codes are automatically padded to 20 bytes by adding
+                           '\x20'.
+c12_18_csv_parser.py     - tool to process the CSV files generated by the Saleae Logic
+                           Analyzer.  This tool takes two CVS files (RXD and TXD) and processes
+                           the data they contain.  First the data is combined, sorted by
+                           time, and several data columns are added to the files.  A new 
+                           file is generated with this sorted data.  This combined file is
+                           then processed to mark the C12.18 packets appropriately.  This
+                           allows for easy comparison against the C12.18 standard.  This
+                           tool only processes the primary packet and does not parse the
+                           data passed within the data portion of the packet. (You get the
+                           pleasure of doing this yourself. See ANSI C12.18 and ANSI C12.19)
+c12_18_config.txt        - example configuration file
+meter_passwd.txt         - example password file for brute forcing
+
+------------------
+QUESTIONS/COMMENTS/CONCERNS
+------------------
+
+Please drop me a note: don@inguardians.com
+Bug fixes, updates, etc: don@inguardians.com
+
+------------------
+COLLABORATORS
+------------------
+Don C. Weber        InGuardians, Inc.       don@inguardians.com
+Tom Liston          InGuardians, Inc.       tom@inguardians.com
+Ed Beroset          Elster                  edward.j.beroset@us.elster.com
+
+------------------
+THANKS
+------------------
+
+A word of thanks to several folks who helped out with this project:
+
+InGuardians
+Andrew Righter
+Joshua Wright
+John Sawyer
+Tom Liston
+Matt Carpenter
+Travis Goodspeed
+Ed Beroset
+Justin Searle
+Robert Former
